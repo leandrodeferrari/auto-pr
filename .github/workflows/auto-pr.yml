@@ -24,7 +24,7 @@ jobs:
         id: create-pr
         uses: peter-evans/create-pull-request@v7
         with:
-          branch: "pr-from-${{ github.ref_name }}"
+          branch: "${{ github.ref_name }}"
           base: main
           title: "Automated Pull Request: Merge Feature Branch"
           committer: ${{ env.GIT_COMMIT_AUTHOR_NAME }} <${{ env.GIT_COMMIT_AUTHOR_EMAIL }}>
