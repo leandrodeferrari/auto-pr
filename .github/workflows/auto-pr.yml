@@ -12,11 +12,15 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: Extract Git Commit Data
-        uses: rlespinasse/git-commit-data-action@v1
+      - name: Reset Branch to Base
+        run: |
+          # Sincronizar con la rama base 'main'
+          git fetch origin main:main
+          git reset --hard origin/main
+          # Crear o actualizar una rama de promoción
+          git checkout -B "pr-from-${{ github.ref_name }}"
+          git push origin "pr-from-${{ github.ref_name }}" --force
 
       - name: Debug Current Branch
         run: |
@@ -45,17 +49,13 @@ jobs:
           github-token: ${{ secrets.PR_DEMO }}
           number: ${{ steps.create-pr.outputs.pull-request-number }}
 
-      - name: Debug Approval Status
-        run: |
-          echo "Approval Status: ${{ steps.approve.outputs.status }}"
-
       - name: Merge Pull Request
         uses: juliangruber/merge-pull-request-action@v1
         with:
           github-token: ${{ secrets.PR_DEMO }}
           number: ${{ steps.create-pr.outputs.pull-request-number }}
           method: squash
-          
+
       - name: Debug Merge Status
         run: |
           echo "Merge Status: ${{ steps.merge.outputs.status }}"
