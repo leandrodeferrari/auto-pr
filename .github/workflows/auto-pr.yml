@@ -3,7 +3,7 @@ name: Auto Pull Request Workflow
 on:
   push:
     branches:
-      - "feature/*"
+      - main
 
 jobs:
   auto-pull-request:
@@ -13,10 +13,15 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          ref: production
 
       - name: Extract Git Commit Data
         uses: rlespinasse/git-commit-data-action@v1
+
+      - name: Reset promotion branch
+        run: |
+          git fetch origin main:main
+          git reset --hard main
 
       - name: Debug Current Branch
         run: |
@@ -26,36 +31,4 @@ jobs:
         id: create-pr
         uses: peter-evans/create-pull-request@v7
         with:
-          branch: "pr-from-${{ github.ref_name }}"
-          base: main
-          title: "Automated Pull Request: Merge Feature Branch"
-          body: |
-            This pull request was automatically created by a GitHub Actions workflow.
-            It merges changes from branch ${{ github.ref_name }} into the `main` branch.
-          token: ${{ secrets.GITHUB_TOKEN }}
-          delete-branch: true
-
-      - name: Debug Pull Request Number
-        run: |
-          echo "Pull Request Number: ${{ steps.create-pr.outputs.pull-request-number }}"
-
-      - name: Approve Pull Request
-        uses: juliangruber/approve-pull-request-action@v2
-        with:
-          github-token: ${{ secrets.PR_DEMO }}
-          number: ${{ steps.create-pr.outputs.pull-request-number }}
-
-      - name: Debug Approval Status
-        run: |
-          echo "Approval Status: ${{ steps.approve.outputs.status }}"
-
-      - name: Merge Pull Request
-        uses: juliangruber/merge-pull-request-action@v1
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          number: ${{ steps.create-pr.outputs.pull-request-number }}
-          method: squash
-          
-      - name: Debug Merge Status
-        run: |
-          echo "Merge Status: ${{ steps.merge.outputs.status }}"
+          branch: production-promotion
