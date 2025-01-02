@@ -31,7 +31,7 @@ jobs:
         id: create-pr
         uses: peter-evans/create-pull-request@v7
         with:
-          branch: production-promotion
+          branch: "pr-from-${{ github.ref_name }}"
 
       - name: Debug Pull Request Number
         run: |
