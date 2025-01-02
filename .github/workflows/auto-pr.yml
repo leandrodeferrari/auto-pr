@@ -3,7 +3,7 @@ name: Auto Pull Request Workflow
 on:
   push:
     branches:
-      - main
+      - "feature/*"
 
 jobs:
   auto-pull-request:
@@ -13,7 +13,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          ref: production
+          ref: main
 
       - name: Extract Git Commit Data
         uses: rlespinasse/git-commit-data-action@v1
