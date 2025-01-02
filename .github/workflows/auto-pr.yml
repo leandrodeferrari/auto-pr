@@ -42,10 +42,6 @@ jobs:
         with:
           github-token: ${{ secrets.PR_DEMO }}
           number: ${{ steps.create-pr.outputs.pull-request-number }}
-
-      - name: Debug Approval Status
-        run: |
-          echo "Approval Status: ${{ steps.approve.outputs.status }}"
           
       - name: Merge Pull Request
         uses: juliangruber/merge-pull-request-action@v1
@@ -53,7 +49,3 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           number: ${{ steps.create-pr.outputs.pull-request-number }}
           method: squash
-          
-      - name: Debug Merge Status
-        run: |
-          echo "Merge Status: ${{ steps.merge.outputs.status }}"
