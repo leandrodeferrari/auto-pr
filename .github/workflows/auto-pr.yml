@@ -32,3 +32,28 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           branch: production-promotion
+
+      - name: Debug Pull Request Number
+        run: |
+          echo "Pull Request Number: ${{ steps.create-pr.outputs.pull-request-number }}"
+
+      - name: Approve Pull Request
+        uses: juliangruber/approve-pull-request-action@v2
+        with:
+          github-token: ${{ secrets.PR_DEMO }}
+          number: ${{ steps.create-pr.outputs.pull-request-number }}
+
+      - name: Debug Approval Status
+        run: |
+          echo "Approval Status: ${{ steps.approve.outputs.status }}"
+
+      - name: Merge Pull Request
+        uses: juliangruber/merge-pull-request-action@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          number: ${{ steps.create-pr.outputs.pull-request-number }}
+          method: squash
+          
+      - name: Debug Merge Status
+        run: |
+          echo "Merge Status: ${{ steps.merge.outputs.status }}"
